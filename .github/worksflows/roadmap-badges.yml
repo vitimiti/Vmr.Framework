@@ -1,0 +1,36 @@
+name: Update Roadmap Badges
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-badges:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Generate badges and update README
+        run: dotnet run --project tools/RoadmapBadges/RoadmapBadges.csproj
+
+      - name: Commit changes (if any)
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "automation-bot"
+            git config user.email "bot@placeholder.local"
+            git add README.md badges/*.json
+            git commit -m "chore: update roadmap badges"
+            git push
+          else
+            echo "No changes to commit."
+          fi
