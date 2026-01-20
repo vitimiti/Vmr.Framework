@@ -1,5 +1,3 @@
 <Solution>
-  <Folder Name="/Tools/">
-    <Project Path="RoadmapBadges/RoadmapBadges.csproj" />
-  </Folder>
+  <Folder Name="/Tools/" />
 </Solution>
