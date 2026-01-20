@@ -14,12 +14,16 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 const string readmeFile = "README.md";
 const string badgesDir = "badges";
+
+var repoSlug = TryGetRepoSlug() ?? "<OWNER>/<REPO>";
+var rawBaseUrl = $"https://raw.githubusercontent.com/{repoSlug}/main";
 
 var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
 
@@ -90,7 +94,7 @@ for (var i = roadmapStart + 1; i < roadmapEnd; i++)
 
     var badgeIndex = i + 1;
     var expectedBadgeLine =
-        $"![{sectionName}](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/<OWNER>/<REPO>/main/badges/{Slugify(sectionName)}.json)";
+        $"![{sectionName}](https://img.shields.io/endpoint?url={rawBaseUrl}/badges/{Slugify(sectionName)}.json)";
 
     if (badgeIndex >= sectionEnd || !lines[badgeIndex].StartsWith("!["))
     {
@@ -139,6 +143,42 @@ string Slugify(string input)
     return FinalSlugRegex().Replace(slug, "");
 }
 
+string? TryGetRepoSlug()
+{
+    try
+    {
+        var info = new ProcessStartInfo("git", "config --get remote.origin.url")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        };
+
+        using var process = Process.Start(info);
+        if (process is null)
+        {
+            return null;
+        }
+
+        var output = process.StandardOutput.ReadToEnd().Trim();
+        process.WaitForExit();
+
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            return null;
+        }
+
+        // Supports: https://github.com/owner/repo(.git) and git@github.com:owner/repo(.git)
+        var match = RepoSlugRegex().Match(output);
+        return match.Success ? match.Groups["slug"].Value : null;
+    }
+    catch
+    {
+        return null;
+    }
+}
+
 void WriteBadgeFile(string sectionName, int percent)
 {
     var slug = Slugify(sectionName);
@@ -178,4 +218,7 @@ internal static partial class Program
 
     [GeneratedRegex(@"^-+|-+$")]
     private static partial Regex FinalSlugRegex();
+
+    [GeneratedRegex(@"(?:github\.com[:/])(?<slug>[^/\s]+/[^/\s]+?)(?:\.git)?$")]
+    private static partial Regex RepoSlugRegex();
 }
