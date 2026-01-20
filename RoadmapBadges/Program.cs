@@ -93,8 +93,9 @@ for (var i = roadmapStart + 1; i < roadmapEnd; i++)
     lines[i] = $"{updateHeader} - `{percent}%`";
 
     var badgeIndex = i + 1;
+    var badgeJsonUrl = $"{rawBaseUrl}/badges/{Slugify(sectionName)}.json";
     var expectedBadgeLine =
-        $"![{sectionName}](https://img.shields.io/endpoint?url={rawBaseUrl}/badges/{Slugify(sectionName)}.json)";
+        $"![{sectionName}](https://img.shields.io/endpoint?url={Uri.EscapeDataString(badgeJsonUrl)})";
 
     if (badgeIndex >= sectionEnd || !lines[badgeIndex].StartsWith("!["))
     {
