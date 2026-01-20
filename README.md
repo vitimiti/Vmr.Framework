@@ -8,7 +8,9 @@ This section tracks planned and in‑progress features.
 
 > Note: Apple platforms are not planned due to tooling constraints.
 
-### 🪟 Window Management — `0%`
+### 🪟 Window Management — `0%` - `0%`
+![🪟 Window Management — `0%`](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvitimiti%2FVmr.Framework%2Fmain%2Fbadges%2Fwindow-management-0.json)
+`[░░░░░░░░░░] 0%`
 
 ![Window Management](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/<OWNER>/<REPO>/main/badges/window-management.json)
 `[░░░░░░░░░░] 0%`
@@ -16,7 +18,9 @@ This section tracks planned and in‑progress features.
 - [ ] 🧩 Open and manage a window with a **hardware renderer** on **X11**
 - [ ] 🧩 Open and manage a window with a **hardware renderer** on **Wayland**
 
-### 🎨 Hardware Renderer — `0%`
+### 🎨 Hardware Renderer — `0%` - `0%`
+![🎨 Hardware Renderer — `0%`](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvitimiti%2FVmr.Framework%2Fmain%2Fbadges%2Fhardware-renderer-0.json)
+`[░░░░░░░░░░] 0%`
 
 ![Hardware Renderer](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/<OWNER>/<REPO>/main/badges/hardware-renderer.json)
 `[░░░░░░░░░░] 0%`
@@ -24,7 +28,9 @@ This section tracks planned and in‑progress features.
 - [ ] 🧪 **OpenGL Core** support
 - [ ] 🔥 **Vulkan** support
 
-### 🧰 Utilities — `0%`
+### 🧰 Utilities — `0%` - `0%`
+![🧰 Utilities — `0%`](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fvitimiti%2FVmr.Framework%2Fmain%2Fbadges%2Futilities-0.json)
+`[░░░░░░░░░░] 0%`
 
 ![Utilities](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/<OWNER>/<REPO>/main/badges/utilities.json)
 `[░░░░░░░░░░] 0%`
