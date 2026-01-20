@@ -60,8 +60,10 @@ for (var i = roadmapStart + 1; i < roadmapEnd; i++)
     }
 
     var headerLine = lines[i];
-    var headerText = headerLine[4..].Trim();
-    var sectionName = headerText.Split(" - ")[0].Trim();
+    var headerText = PercentRegex().Replace(headerLine, "");
+    headerText = HeaderSeparatorRegex().Replace(headerText, "");
+    var sectionName = headerText[4..].Trim();
+    var sectionSlug = Slugify(sectionName);
 
     var sectionEnd = lines.FindIndex(i + 1, l => l.StartsWith("### ") || l.StartsWith("## "));
     if (sectionEnd < 0 || sectionEnd > roadmapEnd)
@@ -89,11 +91,10 @@ for (var i = roadmapStart + 1; i < roadmapEnd; i++)
     var percent = total == 0 ? 0 : (int)float.Round(done * 100F / total, MidpointRounding.AwayFromZero);
     percent = int.Clamp(percent, 0, 100);
 
-    var updateHeader = PercentRegex().Replace(headerLine, "");
-    lines[i] = $"{updateHeader} - `{percent}%`";
+    lines[i] = $"### {sectionName} — `{percent}%`";
 
     var badgeIndex = i + 1;
-    var badgeJsonUrl = $"{rawBaseUrl}/badges/{Slugify(sectionName)}.json";
+    var badgeJsonUrl = $"{rawBaseUrl}/badges/{sectionSlug}.json";
     var expectedBadgeLine =
         $"![{sectionName}](https://img.shields.io/endpoint?url={Uri.EscapeDataString(badgeJsonUrl)})";
 
@@ -123,7 +124,7 @@ for (var i = roadmapStart + 1; i < roadmapEnd; i++)
         roadmapEnd++;
     }
 
-    WriteBadgeFile(sectionName, percent);
+    WriteBadgeFile(sectionName, sectionSlug, percent);
 }
 
 await File.WriteAllLinesAsync(readmeFile, lines);
@@ -180,9 +181,8 @@ string? TryGetRepoSlug()
     }
 }
 
-void WriteBadgeFile(string sectionName, int percent)
+void WriteBadgeFile(string sectionName, string sectionSlug, int percent)
 {
-    var slug = Slugify(sectionName);
     var color = percent switch
     {
         0 => "lightgrey",
@@ -200,7 +200,7 @@ void WriteBadgeFile(string sectionName, int percent)
     };
 
     var json = JsonSerializer.Serialize(badge, jsonOptions);
-    File.WriteAllText(Path.Combine(badgesDir, $"{slug}.json"), json, Encoding.UTF8);
+    File.WriteAllText(Path.Combine(badgesDir, $"{sectionSlug}.json"), json, Encoding.UTF8);
 }
 
 internal static partial class Program
@@ -210,6 +210,9 @@ internal static partial class Program
 
     [GeneratedRegex(@" - `\d+%`")]
     private static partial Regex PercentRegex();
+
+    [GeneratedRegex(@"(?:\s*[—-]\s*)$")]
+    private static partial Regex HeaderSeparatorRegex();
 
     [GeneratedRegex(@"^`\[[█░]+\] \d+%`$")]
     private static partial Regex ProgressBarRegex();
