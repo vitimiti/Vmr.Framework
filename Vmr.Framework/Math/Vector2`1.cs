@@ -144,7 +144,7 @@ public record struct Vector2<TNumber>(TNumber X, TNumber Y)
     /// Scales a vector by a scalar.
     /// </summary>
     /// <param name="vector">The vector.</param>
-    /// <param name="scalar">The scale factor.</param>
+    /// <param name="scalar">The scale factor.</param>1
     /// <returns>The scaled vector.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -172,4 +172,27 @@ public record struct Vector2<TNumber>(TNumber X, TNumber Y)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2<TNumber> operator /(Vector2<TNumber> vector, TNumber scalar) =>
         new(vector.X / scalar, vector.Y / scalar);
+
+    /// <summary>
+    /// Returns a vector with component-wise absolute values.
+    /// </summary>
+    /// <returns>The absolute vector.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Vector2<TNumber> Abs() => new(TNumber.Abs(X), TNumber.Abs(Y));
+
+    /// <summary>
+    /// Clamps the vector between a minimum and maximum vector.
+    /// </summary>
+    /// <param name="min">The minimum vector.</param>
+    /// <param name="max">The maximum vector.</param>
+    /// <returns>The clamped vector.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Vector2<TNumber> Clamp(Vector2<TNumber> min, Vector2<TNumber> max)
+    {
+        var x = TNumber.Min(TNumber.Max(X, min.X), max.X);
+        var y = TNumber.Min(TNumber.Max(Y, min.Y), max.Y);
+        return new Vector2<TNumber>(x, y);
+    }
 }

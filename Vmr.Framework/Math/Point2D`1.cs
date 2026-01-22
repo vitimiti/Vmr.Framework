@@ -90,4 +90,13 @@ public record struct Point2D<TNumber>(TNumber X, TNumber Y)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Vector2<TNumber> operator -(Point2D<TNumber> left, Point2D<TNumber> right) =>
         new(left.X - right.X, left.Y - right.Y);
+
+    /// <summary>
+    /// Translates the point by the specified vector.
+    /// </summary>
+    /// <param name="offset">The translation vector.</param>
+    /// <returns>The translated point.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Point2D<TNumber> Translate(Vector2<TNumber> offset) => new(X + offset.X, Y + offset.Y);
 }

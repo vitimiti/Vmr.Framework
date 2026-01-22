@@ -60,6 +60,44 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     public TNumber Bottom => Y + Height - TNumber.One;
 
     /// <summary>
+    /// Gets the center point of the rectangle.
+    /// </summary>
+    [Pure]
+    public Point2D<TNumber> Center
+    {
+        get
+        {
+            var halfWidth = (Width - TNumber.One) / (TNumber.One + TNumber.One);
+            var halfHeight = (Height - TNumber.One) / (TNumber.One + TNumber.One);
+            return new Point2D<TNumber>(X + halfWidth, Y + halfHeight);
+        }
+    }
+
+    /// <summary>
+    /// Gets the top-left corner.
+    /// </summary>
+    [Pure]
+    public Point2D<TNumber> TopLeft => new(Left, Top);
+
+    /// <summary>
+    /// Gets the top-right corner.
+    /// </summary>
+    [Pure]
+    public Point2D<TNumber> TopRight => new(Right, Top);
+
+    /// <summary>
+    /// Gets the bottom-left corner.
+    /// </summary>
+    [Pure]
+    public Point2D<TNumber> BottomLeft => new(Left, Bottom);
+
+    /// <summary>
+    /// Gets the bottom-right corner.
+    /// </summary>
+    [Pure]
+    public Point2D<TNumber> BottomRight => new(Right, Bottom);
+
+    /// <summary>
     /// Gets the top-left position of the rectangle.
     /// </summary>
     [Pure]
@@ -235,5 +273,27 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
         var x = TNumber.Min(TNumber.Max(point.X, Left), Right);
         var y = TNumber.Min(TNumber.Max(point.Y, Top), Bottom);
         return new Point2D<TNumber>(x, y);
+    }
+
+    /// <summary>
+    /// Expands the rectangle to include a point (inclusive).
+    /// </summary>
+    /// <param name="point">The point to include.</param>
+    /// <returns>The expanded rectangle.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Rectangle<TNumber> ExpandToInclude(Point2D<TNumber> point)
+    {
+        if (IsEmpty)
+        {
+            return new Rectangle<TNumber>(point.X, point.Y, TNumber.One, TNumber.One);
+        }
+
+        var left = TNumber.Min(Left, point.X);
+        var top = TNumber.Min(Top, point.Y);
+        var right = TNumber.Max(Right, point.X);
+        var bottom = TNumber.Max(Bottom, point.Y);
+
+        return new Rectangle<TNumber>(left, top, (right - left) + TNumber.One, (bottom - top) + TNumber.One);
     }
 }

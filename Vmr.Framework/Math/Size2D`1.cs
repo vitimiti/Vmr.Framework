@@ -48,4 +48,34 @@ public record struct Size2D<TNumber>(TNumber Width, TNumber Height)
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public TNumber Area() => Width * Height;
+
+    /// <summary>
+    /// Converts the size to a vector.
+    /// </summary>
+    /// <returns>The corresponding vector.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Vector2<TNumber> ToVector() => new(Width, Height);
+
+    /// <summary>
+    /// Clamps the size between a minimum and maximum size.
+    /// </summary>
+    /// <param name="min">The minimum size.</param>
+    /// <param name="max">The maximum size.</param>
+    /// <returns>The clamped size.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Size2D<TNumber> Clamp(Size2D<TNumber> min, Size2D<TNumber> max)
+    {
+        var width = TNumber.Min(TNumber.Max(Width, min.Width), max.Width);
+        var height = TNumber.Min(TNumber.Max(Height, min.Height), max.Height);
+        return new Size2D<TNumber>(width, height);
+    }
+
+    /// <summary>
+    /// Converts the size to a vector.
+    /// </summary>
+    /// <param name="size">The size.</param>
+    /// <returns>The corresponding vector.</returns>
+    public static explicit operator Vector2<TNumber>(Size2D<TNumber> size) => size.ToVector();
 }
