@@ -296,4 +296,17 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
 
         return new Rectangle<TNumber>(left, top, (right - left) + TNumber.One, (bottom - top) + TNumber.One);
     }
+
+    /// <summary>
+    /// Checks whether the rectangle intersects a circle (inclusive).
+    /// </summary>
+    /// <param name="circle">The circle to test.</param>
+    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Intersects(Circle2D<TNumber> circle)
+    {
+        var closest = Clamp(circle.Center);
+        return Point2D<TNumber>.DistanceSquared(closest, circle.Center) <= (circle.Radius * circle.Radius);
+    }
 }

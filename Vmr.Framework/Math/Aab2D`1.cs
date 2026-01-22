@@ -78,6 +78,28 @@ public record struct Aabb2D<TNumber>(Point2D<TNumber> Min, Point2D<TNumber> Max)
         Min.X <= other.Max.X && Max.X >= other.Min.X && Min.Y <= other.Max.Y && Max.Y >= other.Min.Y;
 
     /// <summary>
+    /// Checks whether the bounding box intersects a rectangle (inclusive).
+    /// </summary>
+    /// <param name="rectangle">The rectangle to test.</param>
+    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Intersects(Rectangle<TNumber> rectangle) => Intersects(FromRectangle(rectangle));
+
+    /// <summary>
+    /// Checks whether the bounding box intersects a circle (inclusive).
+    /// </summary>
+    /// <param name="circle">The circle to test.</param>
+    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Intersects(Circle2D<TNumber> circle)
+    {
+        var rect = ToRectangle();
+        return rect.Intersects(circle);
+    }
+
+    /// <summary>
     /// Converts the bounding box to a rectangle.
     /// </summary>
     /// <param name="aabb">The bounding box.</param>

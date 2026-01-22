@@ -62,4 +62,13 @@ public record struct Circle2D<TNumber>(Point2D<TNumber> Center, TNumber Radius)
         var radiusSum = Radius + other.Radius;
         return Point2D<TNumber>.DistanceSquared(Center, other.Center) <= radiusSum * radiusSum;
     }
+
+    /// <summary>
+    /// Checks whether the circle intersects a rectangle (inclusive).
+    /// </summary>
+    /// <param name="rectangle">The rectangle to test.</param>
+    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Intersects(Rectangle<TNumber> rectangle) => rectangle.Intersects(this);
 }
