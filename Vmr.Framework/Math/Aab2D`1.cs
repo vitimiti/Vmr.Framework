@@ -76,4 +76,11 @@ public record struct Aabb2D<TNumber>(Point2D<TNumber> Min, Point2D<TNumber> Max)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Intersects(Aabb2D<TNumber> other) =>
         Min.X <= other.Max.X && Max.X >= other.Min.X && Min.Y <= other.Max.Y && Max.Y >= other.Min.Y;
+
+    /// <summary>
+    /// Converts the bounding box to a rectangle.
+    /// </summary>
+    /// <param name="aabb">The bounding box.</param>
+    /// <returns>The rectangle.</returns>
+    public static explicit operator Rectangle<TNumber>(Aabb2D<TNumber> aabb) => aabb.ToRectangle();
 }
