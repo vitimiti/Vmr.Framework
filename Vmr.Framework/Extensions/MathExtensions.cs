@@ -447,6 +447,85 @@ public static class MathExtensions
             point = segment.Start + (direction * t);
             return true;
         }
+
+        /// <summary>
+        /// Attempts to intersect a ray with the rectangle and returns the hit normal.
+        /// </summary>
+        /// <param name="ray">The ray to test.</param>
+        /// <param name="t">The distance along the ray to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <param name="normal">The surface normal at the intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(
+            Ray2D<TNumber> ray,
+            out TNumber t,
+            out Point2D<TNumber> point,
+            out Vector2<TNumber> normal
+        )
+        {
+            if (!rectangle.TryIntersect(ray, out t, out point))
+            {
+                normal = Vector2<TNumber>.Zero;
+                return false;
+            }
+
+            normal = Rectangle<TNumber>.GetRectangleNormal(rectangle, point);
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to intersect a line segment with the rectangle and returns the hit normal.
+        /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <param name="t">The normalized distance along the segment to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <param name="normal">The surface normal at the intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(
+            LineSegment2D<TNumber> segment,
+            out TNumber t,
+            out Point2D<TNumber> point,
+            out Vector2<TNumber> normal
+        )
+        {
+            if (!rectangle.TryIntersect(segment, out t, out point))
+            {
+                normal = Vector2<TNumber>.Zero;
+                return false;
+            }
+
+            normal = Rectangle<TNumber>.GetRectangleNormal(rectangle, point);
+            return true;
+        }
+
+        private static Vector2<TNumber> GetRectangleNormal(Rectangle<TNumber> rect, Point2D<TNumber> point)
+        {
+            TNumber leftDist = TNumber.Abs(point.X - rect.Left);
+            TNumber rightDist = TNumber.Abs(point.X - rect.Right);
+            TNumber topDist = TNumber.Abs(point.Y - rect.Top);
+            TNumber bottomDist = TNumber.Abs(point.Y - rect.Bottom);
+
+            TNumber min = TNumber.Min(TNumber.Min(leftDist, rightDist), TNumber.Min(topDist, bottomDist));
+
+            if (TNumber.Abs(min - leftDist) < TNumber.Epsilon)
+            {
+                return new Vector2<TNumber>(-TNumber.One, TNumber.Zero);
+            }
+
+            if (TNumber.Abs(min - rightDist) < TNumber.Epsilon)
+            {
+                return new Vector2<TNumber>(TNumber.One, TNumber.Zero);
+            }
+
+            if (TNumber.Abs(min - topDist) < TNumber.Epsilon)
+            {
+                return new Vector2<TNumber>(TNumber.Zero, -TNumber.One);
+            }
+
+            return new Vector2<TNumber>(TNumber.Zero, TNumber.One);
+        }
     }
 
     extension<TNumber>(Aabb2D<TNumber> aabb)
@@ -502,6 +581,87 @@ public static class MathExtensions
         {
             Rectangle<TNumber> rectangle = aabb.ToRectangle();
             return rectangle.TryIntersect(segment, out t, out point);
+        }
+
+        /// <summary>
+        /// Attempts to intersect a ray with the bounding box and returns the hit normal.
+        /// </summary>
+        /// <param name="ray">The ray to test.</param>
+        /// <param name="t">The distance along the ray to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <param name="normal">The surface normal at the intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(
+            Ray2D<TNumber> ray,
+            out TNumber t,
+            out Point2D<TNumber> point,
+            out Vector2<TNumber> normal
+        )
+        {
+            Rectangle<TNumber> rectangle = aabb.ToRectangle();
+            if (!rectangle.TryIntersect(ray, out t, out point))
+            {
+                normal = Vector2<TNumber>.Zero;
+                return false;
+            }
+
+            normal = Aabb2D<TNumber>.GetAabbNormal(rectangle, point);
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to intersect a line segment with the bounding box and returns the hit normal.
+        /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <param name="t">The normalized distance along the segment to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <param name="normal">The surface normal at the intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(
+            LineSegment2D<TNumber> segment,
+            out TNumber t,
+            out Point2D<TNumber> point,
+            out Vector2<TNumber> normal
+        )
+        {
+            Rectangle<TNumber> rectangle = aabb.ToRectangle();
+            if (!rectangle.TryIntersect(segment, out t, out point))
+            {
+                normal = Vector2<TNumber>.Zero;
+                return false;
+            }
+
+            normal = Aabb2D<TNumber>.GetAabbNormal(rectangle, point);
+            return true;
+        }
+
+        private static Vector2<TNumber> GetAabbNormal(Rectangle<TNumber> rectangle, Point2D<TNumber> point)
+        {
+            TNumber leftDist = TNumber.Abs(point.X - rectangle.Left);
+            TNumber rightDist = TNumber.Abs(point.X - rectangle.Right);
+            TNumber topDist = TNumber.Abs(point.Y - rectangle.Top);
+            TNumber bottomDist = TNumber.Abs(point.Y - rectangle.Bottom);
+
+            TNumber min = TNumber.Min(TNumber.Min(leftDist, rightDist), TNumber.Min(topDist, bottomDist));
+
+            if (TNumber.Abs(min - leftDist) < TNumber.Epsilon)
+            {
+                return new Vector2<TNumber>(-TNumber.One, TNumber.Zero);
+            }
+
+            if (TNumber.Abs(min - rightDist) < TNumber.Epsilon)
+            {
+                return new Vector2<TNumber>(TNumber.One, TNumber.Zero);
+            }
+
+            if (TNumber.Abs(min - topDist) < TNumber.Epsilon)
+            {
+                return new Vector2<TNumber>(TNumber.Zero, -TNumber.One);
+            }
+
+            return new Vector2<TNumber>(TNumber.Zero, TNumber.One);
         }
     }
 }
