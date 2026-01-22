@@ -114,6 +114,92 @@ public static class MathExtensions
         /// </summary>
         [Pure]
         public TNumber Radius => TNumber.Sqrt(circle.RadiusSquared);
+
+        /// <summary>
+        /// Attempts to intersect a ray with the circle.
+        /// </summary>
+        /// <param name="ray">The ray to test.</param>
+        /// <param name="t">The distance along the ray to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(Ray2D<TNumber> ray, out TNumber t, out Point2D<TNumber> point)
+        {
+            Vector2<TNumber> oc = ray.Origin - circle.Center;
+            TNumber a = Vector2<TNumber>.Dot(ray.Direction, ray.Direction);
+            TNumber b = (TNumber.One + TNumber.One) * Vector2<TNumber>.Dot(oc, ray.Direction);
+            TNumber c = Vector2<TNumber>.Dot(oc, oc) - (circle.Radius * circle.Radius);
+            TNumber discriminant = (b * b) - ((TNumber.One + TNumber.One) * a * c);
+
+            if (discriminant < TNumber.Zero)
+            {
+                t = TNumber.Zero;
+                point = ray.Origin;
+                return false;
+            }
+
+            TNumber sqrt = TNumber.Sqrt(discriminant);
+            TNumber twoA = (TNumber.One + TNumber.One) * a;
+
+            TNumber t0 = (-b - sqrt) / twoA;
+            TNumber t1 = (-b + sqrt) / twoA;
+
+            t = t0 >= TNumber.Zero ? t0 : t1;
+            if (t < TNumber.Zero)
+            {
+                point = ray.Origin;
+                return false;
+            }
+
+            point = ray.PointAt(t);
+            return true;
+        }
+
+        /// <summary>
+        /// Attempts to intersect a line segment with the circle.
+        /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <param name="t">The normalized distance along the segment to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(LineSegment2D<TNumber> segment, out TNumber t, out Point2D<TNumber> point)
+        {
+            Vector2<TNumber> direction = segment.End - segment.Start;
+            Vector2<TNumber> oc = segment.Start - circle.Center;
+
+            TNumber a = Vector2<TNumber>.Dot(direction, direction);
+            TNumber b = (TNumber.One + TNumber.One) * Vector2<TNumber>.Dot(oc, direction);
+            TNumber c = Vector2<TNumber>.Dot(oc, oc) - (circle.Radius * circle.Radius);
+            TNumber discriminant = (b * b) - ((TNumber.One + TNumber.One) * a * c);
+
+            if (discriminant < TNumber.Zero)
+            {
+                t = TNumber.Zero;
+                point = segment.Start;
+                return false;
+            }
+
+            TNumber sqrt = TNumber.Sqrt(discriminant);
+            TNumber twoA = (TNumber.One + TNumber.One) * a;
+
+            TNumber t0 = (-b - sqrt) / twoA;
+            TNumber t1 = (-b + sqrt) / twoA;
+
+            t = t0;
+            if (t < TNumber.Zero || t > TNumber.One)
+            {
+                t = t1;
+                if (t < TNumber.Zero || t > TNumber.One)
+                {
+                    point = segment.Start;
+                    return false;
+                }
+            }
+
+            point = segment.Start + (direction * t);
+            return true;
+        }
     }
 
     /// <summary>
@@ -179,12 +265,14 @@ public static class MathExtensions
         }
 
         /// <summary>
-        /// Checks whether the rectangle intersects a line segment.
+        /// Attempts to intersect a line segment with the rectangle.
         /// </summary>
         /// <param name="segment">The segment to test.</param>
+        /// <param name="t">The normalized distance along the segment to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
         /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
         [Pure]
-        public bool Intersects(LineSegment2D<TNumber> segment)
+        public bool TryIntersect(LineSegment2D<TNumber> segment, out TNumber t, out Point2D<TNumber> point)
         {
             Vector2<TNumber> direction = segment.End - segment.Start;
             TNumber tMin = TNumber.Zero;
@@ -194,6 +282,8 @@ public static class MathExtensions
             {
                 if (segment.Start.X < rectangle.Left || segment.Start.X > rectangle.Right)
                 {
+                    t = TNumber.Zero;
+                    point = segment.Start;
                     return false;
                 }
             }
@@ -209,6 +299,8 @@ public static class MathExtensions
             {
                 if (segment.Start.Y < rectangle.Top || segment.Start.Y > rectangle.Bottom)
                 {
+                    t = TNumber.Zero;
+                    point = segment.Start;
                     return false;
                 }
             }
@@ -220,7 +312,16 @@ public static class MathExtensions
                 tMax = TNumber.Min(tMax, TNumber.Max(ty1, ty2));
             }
 
-            return tMax >= tMin;
+            if (tMax < tMin)
+            {
+                t = TNumber.Zero;
+                point = segment.Start;
+                return false;
+            }
+
+            t = tMin;
+            point = segment.Start + (direction * t);
+            return true;
         }
     }
 }
