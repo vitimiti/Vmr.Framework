@@ -32,6 +32,15 @@ public sealed class Window(string title, Rectangle<int> bounds, bool fullScreen)
     private bool _disposed;
 
     /// <summary>
+    /// Initializes a new window with the specified title and size.
+    /// </summary>
+    /// <param name="title">The window title.</param>
+    /// <param name="size">The window size.</param>
+    /// <param name="fullScreen">Whether the window should be created in fullscreen mode.</param>
+    public Window(string title, Size2D<int> size, bool fullScreen)
+        : this(title, new Rectangle<int>(0, 0, size.Width, size.Height), fullScreen) { }
+
+    /// <summary>
     /// Finalizes an instance of the <see cref="Window"/> class.
     /// </summary>
     ~Window() => Dispose(disposing: false);

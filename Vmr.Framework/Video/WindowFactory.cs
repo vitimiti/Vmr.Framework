@@ -42,6 +42,18 @@ public static class WindowFactory
     /// </exception>
     public static Window Create(string title, Rectangle<int> bounds, bool fullScreen) => new(title, bounds, fullScreen);
 
+    /// <summary>
+    /// Creates a new window using the best available platform backend.
+    /// </summary>
+    /// <param name="title">The window title.</param>
+    /// <param name="size">The window size.</param>
+    /// <param name="fullScreen">Whether the window should be created in fullscreen mode.</param>
+    /// <returns>The created <see cref="Window"/> instance.</returns>
+    /// <exception cref="PlatformNotSupportedException">
+    /// Thrown when no supported windowing backend is available.
+    /// </exception>
+    public static Window Create(string title, Size2D<int> size, bool fullScreen) => new(title, size, fullScreen);
+
     internal static IPlatformWindow CreatePlatformWindow(string title, Rectangle<int> bounds, bool fullScreen)
     {
         if (OperatingSystem.IsWindows())
