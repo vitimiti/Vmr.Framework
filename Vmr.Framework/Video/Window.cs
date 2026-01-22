@@ -31,6 +31,7 @@ public sealed class Window(string title, Rectangle<int> bounds, bool fullScreen)
 
     private bool _disposed;
 
+    // TODO: This should set a sentinel -1, -1, width, height bound that will use a to be created Display class that can center the window on X11/Win32
     /// <summary>
     /// Initializes a new window with the specified title and size.
     /// </summary>
