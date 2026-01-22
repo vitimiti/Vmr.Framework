@@ -115,4 +115,19 @@ public static class MathExtensions
         [Pure]
         public TNumber Radius => TNumber.Sqrt(circle.RadiusSquared);
     }
+
+    /// <summary>
+    /// Line segment extensions that require square-root support.
+    /// </summary>
+    extension<TNumber>(LineSegment2D<TNumber> line)
+        where TNumber : INumber<TNumber>, IRootFunctions<TNumber>
+    {
+        /// <summary>
+        /// Gets the length of the line segment.
+        /// </summary>
+        /// <returns>The line segment length.</returns>
+        [Pure]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public TNumber Length() => TNumber.Sqrt(line.LengthSquared());
+    }
 }
