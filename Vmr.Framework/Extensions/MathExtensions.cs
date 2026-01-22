@@ -102,4 +102,17 @@ public static class MathExtensions
             return new Vector2<TNumber>((vector.X * cos) - (vector.Y * sin), (vector.X * sin) + (vector.Y * cos));
         }
     }
+
+    /// <summary>
+    /// Circle extensions that require square-root support.
+    /// </summary>
+    extension<TNumber>(Circle2D<TNumber> circle)
+        where TNumber : INumber<TNumber>, IRootFunctions<TNumber>
+    {
+        /// <summary>
+        /// Gets the circle's radius.
+        /// </summary>
+        [Pure]
+        public TNumber Radius => TNumber.Sqrt(circle.RadiusSquared);
+    }
 }
