@@ -26,14 +26,14 @@ namespace Vmr.Framework.Math;
 /// </summary>
 /// <typeparam name="TNumber">The numeric type used for coordinates.</typeparam>
 [SuppressMessage("Design", "CA1000:Do not declare static members on generic types", Justification = "By design.")]
-public record struct Circle2D<TNumber>(Point2D<TNumber> Center, TNumber Radius)
+public record struct Circle<TNumber>(Point2D<TNumber> Center, TNumber Radius)
     where TNumber : INumber<TNumber>
 {
     /// <summary>
     /// Gets a circle centered at the origin with a radius of zero.
     /// </summary>
     [Pure]
-    public static Circle2D<TNumber> Zero => new(Point2D<TNumber>.Zero, TNumber.Zero);
+    public static Circle<TNumber> Zero => new(Point2D<TNumber>.Zero, TNumber.Zero);
 
     /// <summary>
     /// Gets the squared radius.
@@ -57,7 +57,7 @@ public record struct Circle2D<TNumber>(Point2D<TNumber> Center, TNumber Radius)
     /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Intersects(Circle2D<TNumber> other)
+    public bool Intersects(Circle<TNumber> other)
     {
         TNumber radiusSum = Radius + other.Radius;
         return Point2D<TNumber>.DistanceSquared(Center, other.Center) <= radiusSum * radiusSum;

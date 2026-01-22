@@ -210,7 +210,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Intersects(Circle2D<TNumber> circle)
+    public bool Intersects(Circle<TNumber> circle)
     {
         Point2D<TNumber> closest = Clamp(circle.Center);
         return Point2D<TNumber>.DistanceSquared(closest, circle.Center) <= (circle.Radius * circle.Radius);

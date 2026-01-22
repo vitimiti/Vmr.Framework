@@ -122,7 +122,7 @@ public static class MathExtensions
     /// <summary>
     /// Circle extensions that require square-root support.
     /// </summary>
-    extension<TNumber>(Circle2D<TNumber> circle)
+    extension<TNumber>(Circle<TNumber> circle)
         where TNumber : INumber<TNumber>, IRootFunctions<TNumber>
     {
         /// <summary>
@@ -132,7 +132,7 @@ public static class MathExtensions
         public TNumber Radius => TNumber.Sqrt(circle.RadiusSquared);
     }
 
-    extension<TNumber>(Circle2D<TNumber> circle)
+    extension<TNumber>(Circle<TNumber> circle)
         where TNumber : IFloatingPointIeee754<TNumber>
     {
         /// <summary>

@@ -93,7 +93,7 @@ public record struct Aabb2D<TNumber>(Point2D<TNumber> Min, Point2D<TNumber> Max)
     /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Intersects(Circle2D<TNumber> circle)
+    public bool Intersects(Circle<TNumber> circle)
     {
         Rectangle<TNumber> rect = ToRectangle();
         return rect.Intersects(circle);
