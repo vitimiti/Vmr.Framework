@@ -191,8 +191,8 @@ public record struct Vector2<TNumber>(TNumber X, TNumber Y)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Vector2<TNumber> Clamp(Vector2<TNumber> min, Vector2<TNumber> max)
     {
-        var x = TNumber.Min(TNumber.Max(X, min.X), max.X);
-        var y = TNumber.Min(TNumber.Max(Y, min.Y), max.Y);
+        TNumber x = TNumber.Min(TNumber.Max(X, min.X), max.X);
+        TNumber y = TNumber.Min(TNumber.Max(Y, min.Y), max.Y);
         return new Vector2<TNumber>(x, y);
     }
 }

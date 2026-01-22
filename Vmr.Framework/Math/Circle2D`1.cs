@@ -59,7 +59,7 @@ public record struct Circle2D<TNumber>(Point2D<TNumber> Center, TNumber Radius)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool Intersects(Circle2D<TNumber> other)
     {
-        var radiusSum = Radius + other.Radius;
+        TNumber radiusSum = Radius + other.Radius;
         return Point2D<TNumber>.DistanceSquared(Center, other.Center) <= radiusSum * radiusSum;
     }
 

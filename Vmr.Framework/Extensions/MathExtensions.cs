@@ -60,7 +60,7 @@ public static class MathExtensions
         /// </returns>
         public bool TryNormalize(out Vector2<TNumber> result)
         {
-            var length = vector.Length();
+            TNumber length = vector.Length();
             if (length == TNumber.Zero)
             {
                 result = Vector2<TNumber>.Zero;
@@ -97,8 +97,8 @@ public static class MathExtensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Vector2<TNumber> Rotate(TNumber radians)
         {
-            var cos = TNumber.Cos(radians);
-            var sin = TNumber.Sin(radians);
+            TNumber cos = TNumber.Cos(radians);
+            TNumber sin = TNumber.Sin(radians);
             return new Vector2<TNumber>((vector.X * cos) - (vector.Y * sin), (vector.X * sin) + (vector.Y * cos));
         }
     }
@@ -142,8 +142,8 @@ public static class MathExtensions
         [Pure]
         public bool Intersects(Ray2D<TNumber> ray)
         {
-            var tMin = TNumber.NegativeInfinity;
-            var tMax = TNumber.PositiveInfinity;
+            TNumber tMin = TNumber.NegativeInfinity;
+            TNumber tMax = TNumber.PositiveInfinity;
 
             if (TNumber.Abs(ray.Direction.X) < TNumber.Epsilon)
             {
@@ -154,8 +154,8 @@ public static class MathExtensions
             }
             else
             {
-                var tx1 = (rectangle.Left - ray.Origin.X) / ray.Direction.X;
-                var tx2 = (rectangle.Right - ray.Origin.X) / ray.Direction.X;
+                TNumber tx1 = (rectangle.Left - ray.Origin.X) / ray.Direction.X;
+                TNumber tx2 = (rectangle.Right - ray.Origin.X) / ray.Direction.X;
                 tMin = TNumber.Max(tMin, TNumber.Min(tx1, tx2));
                 tMax = TNumber.Min(tMax, TNumber.Max(tx1, tx2));
             }
@@ -169,8 +169,8 @@ public static class MathExtensions
             }
             else
             {
-                var ty1 = (rectangle.Top - ray.Origin.Y) / ray.Direction.Y;
-                var ty2 = (rectangle.Bottom - ray.Origin.Y) / ray.Direction.Y;
+                TNumber ty1 = (rectangle.Top - ray.Origin.Y) / ray.Direction.Y;
+                TNumber ty2 = (rectangle.Bottom - ray.Origin.Y) / ray.Direction.Y;
                 tMin = TNumber.Max(tMin, TNumber.Min(ty1, ty2));
                 tMax = TNumber.Min(tMax, TNumber.Max(ty1, ty2));
             }
@@ -186,9 +186,9 @@ public static class MathExtensions
         [Pure]
         public bool Intersects(LineSegment2D<TNumber> segment)
         {
-            var direction = segment.End - segment.Start;
-            var tMin = TNumber.Zero;
-            var tMax = TNumber.One;
+            Vector2<TNumber> direction = segment.End - segment.Start;
+            TNumber tMin = TNumber.Zero;
+            TNumber tMax = TNumber.One;
 
             if (TNumber.Abs(direction.X) < TNumber.Epsilon)
             {
@@ -199,8 +199,8 @@ public static class MathExtensions
             }
             else
             {
-                var tx1 = (rectangle.Left - segment.Start.X) / direction.X;
-                var tx2 = (rectangle.Right - segment.Start.X) / direction.X;
+                TNumber tx1 = (rectangle.Left - segment.Start.X) / direction.X;
+                TNumber tx2 = (rectangle.Right - segment.Start.X) / direction.X;
                 tMin = TNumber.Max(tMin, TNumber.Min(tx1, tx2));
                 tMax = TNumber.Min(tMax, TNumber.Max(tx1, tx2));
             }
@@ -214,8 +214,8 @@ public static class MathExtensions
             }
             else
             {
-                var ty1 = (rectangle.Top - segment.Start.Y) / direction.Y;
-                var ty2 = (rectangle.Bottom - segment.Start.Y) / direction.Y;
+                TNumber ty1 = (rectangle.Top - segment.Start.Y) / direction.Y;
+                TNumber ty2 = (rectangle.Bottom - segment.Start.Y) / direction.Y;
                 tMin = TNumber.Max(tMin, TNumber.Min(ty1, ty2));
                 tMax = TNumber.Min(tMax, TNumber.Max(ty1, ty2));
             }

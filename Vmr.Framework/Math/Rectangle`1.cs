@@ -67,8 +67,8 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     {
         get
         {
-            var halfWidth = (Width - TNumber.One) / (TNumber.One + TNumber.One);
-            var halfHeight = (Height - TNumber.One) / (TNumber.One + TNumber.One);
+            TNumber halfWidth = (Width - TNumber.One) / (TNumber.One + TNumber.One);
+            TNumber halfHeight = (Height - TNumber.One) / (TNumber.One + TNumber.One);
             return new Point2D<TNumber>(X + halfWidth, Y + halfHeight);
         }
     }
@@ -127,8 +127,8 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Rectangle<TNumber> FromCenter(TNumber centerX, TNumber centerY, TNumber width, TNumber height)
     {
-        var halfWidth = width / (TNumber.One + TNumber.One);
-        var halfHeight = height / (TNumber.One + TNumber.One);
+        TNumber halfWidth = width / (TNumber.One + TNumber.One);
+        TNumber halfHeight = height / (TNumber.One + TNumber.One);
         return new Rectangle<TNumber>(centerX - halfWidth, centerY - halfHeight, width, height);
     }
 
@@ -204,6 +204,19 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
         Left <= other.Right && Right >= other.Left && Top <= other.Bottom && Bottom >= other.Top;
 
     /// <summary>
+    /// Checks whether the rectangle intersects a circle (inclusive).
+    /// </summary>
+    /// <param name="circle">The circle to test.</param>
+    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+    [Pure]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool Intersects(Circle2D<TNumber> circle)
+    {
+        Point2D<TNumber> closest = Clamp(circle.Center);
+        return Point2D<TNumber>.DistanceSquared(closest, circle.Center) <= (circle.Radius * circle.Radius);
+    }
+
+    /// <summary>
     /// Returns the intersection of two rectangles. If there is no intersection, returns <see cref="Zero"/>.
     /// </summary>
     /// <param name="other">The other rectangle.</param>
@@ -212,10 +225,10 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle<TNumber> Intersection(Rectangle<TNumber> other)
     {
-        var left = TNumber.Max(Left, other.Left);
-        var top = TNumber.Max(Top, other.Top);
-        var right = TNumber.Min(Right, other.Right);
-        var bottom = TNumber.Min(Bottom, other.Bottom);
+        TNumber left = TNumber.Max(Left, other.Left);
+        TNumber top = TNumber.Max(Top, other.Top);
+        TNumber right = TNumber.Min(Right, other.Right);
+        TNumber bottom = TNumber.Min(Bottom, other.Bottom);
 
         if (right < left || bottom < top)
         {
@@ -234,10 +247,10 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle<TNumber> Union(Rectangle<TNumber> other)
     {
-        var left = TNumber.Min(Left, other.Left);
-        var top = TNumber.Min(Top, other.Top);
-        var right = TNumber.Max(Right, other.Right);
-        var bottom = TNumber.Max(Bottom, other.Bottom);
+        TNumber left = TNumber.Min(Left, other.Left);
+        TNumber top = TNumber.Min(Top, other.Top);
+        TNumber right = TNumber.Max(Right, other.Right);
+        TNumber bottom = TNumber.Max(Bottom, other.Bottom);
 
         return new Rectangle<TNumber>(left, top, right - left + TNumber.One, bottom - top + TNumber.One);
     }
@@ -270,8 +283,8 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Point2D<TNumber> Clamp(Point2D<TNumber> point)
     {
-        var x = TNumber.Min(TNumber.Max(point.X, Left), Right);
-        var y = TNumber.Min(TNumber.Max(point.Y, Top), Bottom);
+        TNumber x = TNumber.Min(TNumber.Max(point.X, Left), Right);
+        TNumber y = TNumber.Min(TNumber.Max(point.Y, Top), Bottom);
         return new Point2D<TNumber>(x, y);
     }
 
@@ -289,24 +302,11 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
             return new Rectangle<TNumber>(point.X, point.Y, TNumber.One, TNumber.One);
         }
 
-        var left = TNumber.Min(Left, point.X);
-        var top = TNumber.Min(Top, point.Y);
-        var right = TNumber.Max(Right, point.X);
-        var bottom = TNumber.Max(Bottom, point.Y);
+        TNumber left = TNumber.Min(Left, point.X);
+        TNumber top = TNumber.Min(Top, point.Y);
+        TNumber right = TNumber.Max(Right, point.X);
+        TNumber bottom = TNumber.Max(Bottom, point.Y);
 
         return new Rectangle<TNumber>(left, top, (right - left) + TNumber.One, (bottom - top) + TNumber.One);
-    }
-
-    /// <summary>
-    /// Checks whether the rectangle intersects a circle (inclusive).
-    /// </summary>
-    /// <param name="circle">The circle to test.</param>
-    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
-    [Pure]
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Intersects(Circle2D<TNumber> circle)
-    {
-        var closest = Clamp(circle.Center);
-        return Point2D<TNumber>.DistanceSquared(closest, circle.Center) <= (circle.Radius * circle.Radius);
     }
 }

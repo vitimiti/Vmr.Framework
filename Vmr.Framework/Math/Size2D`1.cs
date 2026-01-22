@@ -67,8 +67,8 @@ public record struct Size2D<TNumber>(TNumber Width, TNumber Height)
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Size2D<TNumber> Clamp(Size2D<TNumber> min, Size2D<TNumber> max)
     {
-        var width = TNumber.Min(TNumber.Max(Width, min.Width), max.Width);
-        var height = TNumber.Min(TNumber.Max(Height, min.Height), max.Height);
+        TNumber width = TNumber.Min(TNumber.Max(Width, min.Width), max.Width);
+        TNumber height = TNumber.Min(TNumber.Max(Height, min.Height), max.Height);
         return new Size2D<TNumber>(width, height);
     }
 
