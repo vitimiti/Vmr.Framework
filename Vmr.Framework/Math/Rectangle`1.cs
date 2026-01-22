@@ -69,7 +69,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// Gets the size of the rectangle.
     /// </summary>
     [Pure]
-    public Vector2<TNumber> Size => new(Width, Height);
+    public Size2D<TNumber> Size => new(Width, Height);
 
     /// <summary>
     /// Gets a value indicating whether the rectangle has a non-positive width or height.
@@ -114,8 +114,8 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// <returns>The created rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Rectangle<TNumber> FromCenter(Point2D<TNumber> center, Vector2<TNumber> size) =>
-        FromCenter(center.X, center.Y, size.X, size.Y);
+    public static Rectangle<TNumber> FromCenter(Point2D<TNumber> center, Size2D<TNumber> size) =>
+        FromCenter(center.X, center.Y, size.Width, size.Height);
 
     /// <summary>
     /// Computes the area of the rectangle.
