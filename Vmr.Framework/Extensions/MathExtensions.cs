@@ -120,6 +120,22 @@ public static class MathExtensions
         where TNumber : IFloatingPointIeee754<TNumber>
     {
         /// <summary>
+        /// Checks whether the circle intersects a ray.
+        /// </summary>
+        /// <param name="ray">The ray to test.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool Intersects(Ray2D<TNumber> ray) => circle.TryIntersect(ray, out _, out _);
+
+        /// <summary>
+        /// Checks whether the circle intersects a line segment.
+        /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool Intersects(LineSegment2D<TNumber> segment) => circle.TryIntersect(segment, out _, out _);
+
+        /// <summary>
         /// Attempts to intersect a ray with the circle.
         /// </summary>
         /// <param name="ray">The ray to test.</param>
@@ -436,6 +452,30 @@ public static class MathExtensions
     extension<TNumber>(Aabb2D<TNumber> aabb)
         where TNumber : IFloatingPointIeee754<TNumber>
     {
+        /// <summary>
+        /// Checks whether the bounding box intersects a ray.
+        /// </summary>
+        /// <param name="ray">The ray to test.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool Intersects(Ray2D<TNumber> ray)
+        {
+            Rectangle<TNumber> rectangle = aabb.ToRectangle();
+            return rectangle.Intersects(ray);
+        }
+
+        /// <summary>
+        /// Checks whether the bounding box intersects a line segment.
+        /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool Intersects(LineSegment2D<TNumber> segment)
+        {
+            Rectangle<TNumber> rectangle = aabb.ToRectangle();
+            return rectangle.Intersects(segment);
+        }
+
         /// <summary>
         /// Attempts to intersect a ray with the bounding box.
         /// </summary>
