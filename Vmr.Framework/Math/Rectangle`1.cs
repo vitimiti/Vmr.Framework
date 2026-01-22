@@ -60,7 +60,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     public TNumber Bottom => Y + Height - TNumber.One;
 
     /// <summary>
-    /// Gets the center point of the
+    /// Gets the center point of the rectangle.
     /// </summary>
     [Pure]
     public Point2D<TNumber> Center
@@ -98,13 +98,13 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     public Point2D<TNumber> BottomRight => new(Right, Bottom);
 
     /// <summary>
-    /// Gets the top-left position of the
+    /// Gets the top-left position of the rectangle.
     /// </summary>
     [Pure]
     public Point2D<TNumber> Position => new(X, Y);
 
     /// <summary>
-    /// Gets the size of the
+    /// Gets the size of the rectangle.
     /// </summary>
     [Pure]
     public Size2D<TNumber> Size => new(Width, Height);
@@ -122,7 +122,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// <param name="centerY">The center Y coordinate.</param>
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
-    /// <returns>The created </returns>
+    /// <returns>The created rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Rectangle<TNumber> FromCenter(TNumber centerX, TNumber centerY, TNumber width, TNumber height)
@@ -138,7 +138,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// <param name="center">The center point.</param>
     /// <param name="width">The width.</param>
     /// <param name="height">The height.</param>
-    /// <returns>The created </returns>
+    /// <returns>The created rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Rectangle<TNumber> FromCenter(Point2D<TNumber> center, TNumber width, TNumber height) =>
@@ -149,14 +149,14 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// </summary>
     /// <param name="center">The center point.</param>
     /// <param name="size">The size.</param>
-    /// <returns>The created </returns>
+    /// <returns>The created rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Rectangle<TNumber> FromCenter(Point2D<TNumber> center, Size2D<TNumber> size) =>
         FromCenter(center.X, center.Y, size.Width, size.Height);
 
     /// <summary>
-    /// Computes the area of the
+    /// Computes the area of the rectangle.
     /// </summary>
     /// <returns>The area.</returns>
     [Pure]
@@ -217,55 +217,10 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     }
 
     /// <summary>
-    /// Checks whether the rectangle intersects a line segment.
-    /// </summary>
-    /// <param name="segment">The segment to test.</param>
-    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
-    [Pure]
-    public bool Intersects(LineSegment2D<TNumber> segment)
-    {
-        Vector2<TNumber> direction = segment.End - segment.Start;
-        TNumber tMin = TNumber.Zero;
-        TNumber tMax = TNumber.One;
-
-        if (direction.X == TNumber.Zero)
-        {
-            if (segment.Start.X < Left || segment.Start.X > Right)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            TNumber tx1 = (Left - segment.Start.X) / direction.X;
-            TNumber tx2 = (Right - segment.Start.X) / direction.X;
-            tMin = TNumber.Max(tMin, TNumber.Min(tx1, tx2));
-            tMax = TNumber.Min(tMax, TNumber.Max(tx1, tx2));
-        }
-
-        if (direction.Y == TNumber.Zero)
-        {
-            if (segment.Start.Y < Top || segment.Start.Y > Bottom)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            TNumber ty1 = (Top - segment.Start.Y) / direction.Y;
-            TNumber ty2 = (Bottom - segment.Start.Y) / direction.Y;
-            tMin = TNumber.Max(tMin, TNumber.Min(ty1, ty2));
-            tMax = TNumber.Min(tMax, TNumber.Max(ty1, ty2));
-        }
-
-        return tMax >= tMin;
-    }
-
-    /// <summary>
     /// Returns the intersection of two rectangles. If there is no intersection, returns <see cref="Zero"/>.
     /// </summary>
-    /// <param name="other">The other </param>
-    /// <returns>The intersected </returns>
+    /// <param name="other">The other rectangle.</param>
+    /// <returns>The intersected rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle<TNumber> Intersection(Rectangle<TNumber> other)
@@ -286,8 +241,8 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// <summary>
     /// Returns the union of two rectangles.
     /// </summary>
-    /// <param name="other">The other </param>
-    /// <returns>The union </returns>
+    /// <param name="other">The other rectangle.</param>
+    /// <returns>The union rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle<TNumber> Union(Rectangle<TNumber> other)
@@ -304,7 +259,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// Returns a rectangle offset by the specified vector.
     /// </summary>
     /// <param name="offset">The offset vector.</param>
-    /// <returns>The offset </returns>
+    /// <returns>The offset rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle<TNumber> Offset(Vector2<TNumber> offset) => new(X + offset.X, Y + offset.Y, Width, Height);
@@ -314,7 +269,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// </summary>
     /// <param name="x">The horizontal inflation amount.</param>
     /// <param name="y">The vertical inflation amount.</param>
-    /// <returns>The inflated </returns>
+    /// <returns>The inflated rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle<TNumber> Inflate(TNumber x, TNumber y) => new(X - x, Y - y, Width + (x + x), Height + (y + y));
@@ -337,7 +292,7 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
     /// Expands the rectangle to include a point (inclusive).
     /// </summary>
     /// <param name="point">The point to include.</param>
-    /// <returns>The expanded </returns>
+    /// <returns>The expanded rectangle.</returns>
     [Pure]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public Rectangle<TNumber> ExpandToInclude(Point2D<TNumber> point)
@@ -353,65 +308,5 @@ public record struct Rectangle<TNumber>(TNumber X, TNumber Y, TNumber Width, TNu
         TNumber bottom = TNumber.Max(Bottom, point.Y);
 
         return new Rectangle<TNumber>(left, top, (right - left) + TNumber.One, (bottom - top) + TNumber.One);
-    }
-
-    /// <summary>
-    /// Attempts to intersect a line segment with the rectangle.
-    /// </summary>
-    /// <param name="segment">The segment to test.</param>
-    /// <param name="t">The normalized distance along the segment to the intersection point.</param>
-    /// <param name="point">The intersection point.</param>
-    /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
-    [Pure]
-    public bool TryIntersect(LineSegment2D<TNumber> segment, out TNumber t, out Point2D<TNumber> point)
-    {
-        Vector2<TNumber> direction = segment.End - segment.Start;
-        TNumber tMin = TNumber.Zero;
-        TNumber tMax = TNumber.One;
-
-        if (direction.X == TNumber.Zero)
-        {
-            if (segment.Start.X < Left || segment.Start.X > Right)
-            {
-                t = TNumber.Zero;
-                point = segment.Start;
-                return false;
-            }
-        }
-        else
-        {
-            TNumber tx1 = (Left - segment.Start.X) / direction.X;
-            TNumber tx2 = (Right - segment.Start.X) / direction.X;
-            tMin = TNumber.Max(tMin, TNumber.Min(tx1, tx2));
-            tMax = TNumber.Min(tMax, TNumber.Max(tx1, tx2));
-        }
-
-        if (direction.Y == TNumber.Zero)
-        {
-            if (segment.Start.Y < Top || segment.Start.Y > Bottom)
-            {
-                t = TNumber.Zero;
-                point = segment.Start;
-                return false;
-            }
-        }
-        else
-        {
-            TNumber ty1 = (Top - segment.Start.Y) / direction.Y;
-            TNumber ty2 = (Bottom - segment.Start.Y) / direction.Y;
-            tMin = TNumber.Max(tMin, TNumber.Min(ty1, ty2));
-            tMax = TNumber.Min(tMax, TNumber.Max(ty1, ty2));
-        }
-
-        if (tMax < tMin)
-        {
-            t = TNumber.Zero;
-            point = segment.Start;
-            return false;
-        }
-
-        t = tMin;
-        point = segment.Start + (direction * t);
-        return true;
     }
 }

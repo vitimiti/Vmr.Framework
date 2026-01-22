@@ -114,7 +114,11 @@ public static class MathExtensions
         /// </summary>
         [Pure]
         public TNumber Radius => TNumber.Sqrt(circle.RadiusSquared);
+    }
 
+    extension<TNumber>(Circle2D<TNumber> circle)
+        where TNumber : IFloatingPointIeee754<TNumber>
+    {
         /// <summary>
         /// Attempts to intersect a ray with the circle.
         /// </summary>
@@ -265,6 +269,110 @@ public static class MathExtensions
         }
 
         /// <summary>
+        /// Checks whether the rectangle intersects a line segment.
+        /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool Intersects(LineSegment2D<TNumber> segment)
+        {
+            Vector2<TNumber> direction = segment.End - segment.Start;
+            TNumber tMin = TNumber.Zero;
+            TNumber tMax = TNumber.One;
+
+            if (TNumber.Abs(direction.X) < TNumber.Epsilon)
+            {
+                if (segment.Start.X < rectangle.Left || segment.Start.X > rectangle.Right)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                TNumber tx1 = (rectangle.Left - segment.Start.X) / direction.X;
+                TNumber tx2 = (rectangle.Right - segment.Start.X) / direction.X;
+                tMin = TNumber.Max(tMin, TNumber.Min(tx1, tx2));
+                tMax = TNumber.Min(tMax, TNumber.Max(tx1, tx2));
+            }
+
+            if (TNumber.Abs(direction.Y) < TNumber.Epsilon)
+            {
+                if (segment.Start.Y < rectangle.Top || segment.Start.Y > rectangle.Bottom)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                TNumber ty1 = (rectangle.Top - segment.Start.Y) / direction.Y;
+                TNumber ty2 = (rectangle.Bottom - segment.Start.Y) / direction.Y;
+                tMin = TNumber.Max(tMin, TNumber.Min(ty1, ty2));
+                tMax = TNumber.Min(tMax, TNumber.Max(ty1, ty2));
+            }
+
+            return tMax >= tMin;
+        }
+
+        /// <summary>
+        /// Attempts to intersect a ray with the rectangle.
+        /// </summary>
+        /// <param name="ray">The ray to test.</param>
+        /// <param name="t">The distance along the ray to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(Ray2D<TNumber> ray, out TNumber t, out Point2D<TNumber> point)
+        {
+            TNumber tMin = TNumber.NegativeInfinity;
+            TNumber tMax = TNumber.PositiveInfinity;
+
+            if (TNumber.Abs(ray.Direction.X) < TNumber.Epsilon)
+            {
+                if (ray.Origin.X < rectangle.Left || ray.Origin.X > rectangle.Right)
+                {
+                    t = TNumber.Zero;
+                    point = ray.Origin;
+                    return false;
+                }
+            }
+            else
+            {
+                TNumber tx1 = (rectangle.Left - ray.Origin.X) / ray.Direction.X;
+                TNumber tx2 = (rectangle.Right - ray.Origin.X) / ray.Direction.X;
+                tMin = TNumber.Max(tMin, TNumber.Min(tx1, tx2));
+                tMax = TNumber.Min(tMax, TNumber.Max(tx1, tx2));
+            }
+
+            if (TNumber.Abs(ray.Direction.Y) < TNumber.Epsilon)
+            {
+                if (ray.Origin.Y < rectangle.Top || ray.Origin.Y > rectangle.Bottom)
+                {
+                    t = TNumber.Zero;
+                    point = ray.Origin;
+                    return false;
+                }
+            }
+            else
+            {
+                TNumber ty1 = (rectangle.Top - ray.Origin.Y) / ray.Direction.Y;
+                TNumber ty2 = (rectangle.Bottom - ray.Origin.Y) / ray.Direction.Y;
+                tMin = TNumber.Max(tMin, TNumber.Min(ty1, ty2));
+                tMax = TNumber.Min(tMax, TNumber.Max(ty1, ty2));
+            }
+
+            if (tMax < TNumber.Max(tMin, TNumber.Zero))
+            {
+                t = TNumber.Zero;
+                point = ray.Origin;
+                return false;
+            }
+
+            t = TNumber.Max(tMin, TNumber.Zero);
+            point = ray.PointAt(t);
+            return true;
+        }
+
+        /// <summary>
         /// Attempts to intersect a line segment with the rectangle.
         /// </summary>
         /// <param name="segment">The segment to test.</param>
@@ -322,6 +430,38 @@ public static class MathExtensions
             t = tMin;
             point = segment.Start + (direction * t);
             return true;
+        }
+    }
+
+    extension<TNumber>(Aabb2D<TNumber> aabb)
+        where TNumber : IFloatingPointIeee754<TNumber>
+    {
+        /// <summary>
+        /// Attempts to intersect a ray with the bounding box.
+        /// </summary>
+        /// <param name="ray">The ray to test.</param>
+        /// <param name="t">The distance along the ray to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(Ray2D<TNumber> ray, out TNumber t, out Point2D<TNumber> point)
+        {
+            Rectangle<TNumber> rectangle = aabb.ToRectangle();
+            return rectangle.TryIntersect(ray, out t, out point);
+        }
+
+        /// <summary>
+        /// Attempts to intersect a line segment with the bounding box.
+        /// </summary>
+        /// <param name="segment">The segment to test.</param>
+        /// <param name="t">The normalized distance along the segment to the intersection point.</param>
+        /// <param name="point">The intersection point.</param>
+        /// <returns><see langword="true"/> if they intersect; otherwise <see langword="false"/>.</returns>
+        [Pure]
+        public bool TryIntersect(LineSegment2D<TNumber> segment, out TNumber t, out Point2D<TNumber> point)
+        {
+            Rectangle<TNumber> rectangle = aabb.ToRectangle();
+            return rectangle.TryIntersect(segment, out t, out point);
         }
     }
 }
